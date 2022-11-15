@@ -63,8 +63,8 @@ class User extends Authenticatable
 
 
     // Relasi one to many cabang 
-    public function cabangs()
+    public function cabang()
     {
-        return $this->hasMany(Cabang::class);
+        return $this->belongsTo(Cabang::class);
     }
 }

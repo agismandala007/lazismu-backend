@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\API\CabangController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\UserController;
@@ -100,6 +101,13 @@ Route::prefix('hitung')->middleware('auth:sanctum')->name('hitung.')->group(func
     Route::get('bank', [HitungController::class,'kasbank'])->name('bank');
     Route::post('update/{id}', [HitungController::class,'update'])->name('update');
     Route::delete('{id}', [HitungController::class,'destroy'])->name('delete');
+});
+//cabang API
+Route::prefix('cabang')->middleware('auth:sanctum')->name('cabang.')->group(function(){
+    Route::get('', [CabangController::class,'fetch'])->name('fetch');
+    Route::post('', [CabangController::class,'create'])->name('create');
+    Route::post('update/{id}', [CabangController::class,'update'])->name('update');
+    Route::delete('{id}', [CabangController::class,'destroy'])->name('delete');
 });
 
  

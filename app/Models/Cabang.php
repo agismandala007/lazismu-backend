@@ -9,13 +9,13 @@ class Cabang extends Model
 {
     use HasFactory;
     protected $fillable = [
-        'name',
+        'name'
     ];
 
 
-    public function user()
+    public function users()
     {
-        return $this->belongsTo(User::class);
+        return $this->hasMany(User::class);
     }
 
     public function coadebits()

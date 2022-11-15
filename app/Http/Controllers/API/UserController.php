@@ -56,7 +56,7 @@ class UserController extends Controller
                 'email' => ['required','string','email','max:255','unique:users'],
                 'password' => ['required', 'string', new Password],
                 'role' => ['required'],
-                'comapany_id' => ['required'],
+                'cabang_id' => ['required'],
             ]);
 
             //create user
@@ -64,7 +64,7 @@ class UserController extends Controller
                 'name' => $request->name,
                 'email' => $request->email,
                 'role' => $request->role,
-                'company_id' => $request->company_id,
+                'cabang_id' => $request->cabang_id,
                 'password' => Hash::make($request->password),
             ]);
             

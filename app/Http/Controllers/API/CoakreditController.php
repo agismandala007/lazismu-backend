@@ -17,11 +17,12 @@ class CoakreditController extends Controller
         $id = $request->input('id');
         $name = $request->input('name');
         $limit = $request->input('limit',10);
+        $cabang_id = $request->input('cabang_id');
 
         //get single data
         if($id)
         {
-           $coakredit = Coakredit::find($id);
+           $coakredit = Coakredit::where('cabang_id',$request->cabang_id)->find($id);
 
             if($coakredit)
             {
@@ -30,10 +31,10 @@ class CoakreditController extends Controller
             return ResponseFormatter::error('Coakredit not found');
         }
         //get multiple data
-        $coakredits = Coakredit::query();
+        $coakredits = Coakredit::query()->where('cabang_id',$request->cabang_id);
        
         if($name){
-            $coakredits->where('name','like','%'.$name . '%');
+            $coakredits->where('name','like','%'.$name . '%')->where('cabang_id',$request->cabang_id);
         }
         return ResponseFormatter::success($coakredits->paginate($limit),'Coakredits Found');
     }
@@ -45,6 +46,7 @@ class CoakreditController extends Controller
                 'name' => $request->name,
                 'kode' => $request->kode,
                 'laporan' => $request->laporan,
+                'cabang_id' => $request->cabang_id,
             ]);
             
             if(!$coakredit)
@@ -74,6 +76,7 @@ class CoakreditController extends Controller
                 'name' => $request->name,
                 'kode' => $request->kode,
                 'laporan' => $request->laporan,
+                'cabang_id' => $request->cabang_id
                 
             ]);
 

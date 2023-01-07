@@ -16,7 +16,9 @@ class CoadebitController extends Controller
     {
         $id = $request->input('id');
         $name = $request->input('name');
+        $cabang_id = $request->input('cabang_id');
         $limit = $request->input('limit',10);
+
 
         $coadebitQuery = Coadebit::with(['cabang'])->where('cabang_id',$request->cabang_id);
         //get single data
@@ -46,6 +48,7 @@ class CoadebitController extends Controller
                 'name' => $request->name,
                 'kode' => $request->kode,
                 'laporan' => $request->laporan,
+                'cabang_id' => $request->cabang_id,
             ]);
             
             if(!$coadebit)
@@ -75,6 +78,7 @@ class CoadebitController extends Controller
                 'name' => $request->name,
                 'kode' => $request->kode,
                 'laporan' => $request->laporan,
+                'cabang_id' => $request->cabang_id,
                 
             ]);
 

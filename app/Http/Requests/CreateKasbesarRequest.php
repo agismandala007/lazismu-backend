@@ -4,6 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class CreateKasbesarRequest extends FormRequest
 {
@@ -24,10 +25,13 @@ class CreateKasbesarRequest extends FormRequest
      */
     public function rules()
     {
+        
+        
         return [
             'name' => 'required|string|min:4',
             'penerima' => 'required|string|min:4',
-            'nobuktikas' => 'required|string|max:255|unique:kasbesars',
+            'nobuktikas' => 'required|string|max:255|',
+            'nobuktikas' => Rule::unique('kasbesars')->where(fn ($query) => $query->where('cabang_id', $this->cabang_id)),
             'tanggal' => 'required',
             'ref' => 'nullable',
             'coadebit_id' => 'required|integer|exists:coadebits,id',

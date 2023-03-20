@@ -9,6 +9,8 @@ use App\Helpers\ResponseFormatter;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CreateCoakreditRequest;
 use App\Http\Requests\UpdateCoakreditRequest;
+use App\Imports\CoakreditImport;
+use Maatwebsite\Excel\Facades\Excel;
 
 class CoakreditController extends Controller
 {
@@ -106,5 +108,12 @@ class CoakreditController extends Controller
             return ResponseFormatter::error($e->getMessage(),500);
         }
     }
+    public function import_excel(Request $request) 
+	{
+		// import data
+		Excel::import(new CoakreditImport, $request->file('file')->store('temp'));
+        
+        return ResponseFormatter::success('Import Success');
+	}
 
 }

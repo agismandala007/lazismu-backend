@@ -97,4 +97,61 @@ class UserController extends Controller
         $user = $request->user();
         return ResponseFormatter::success($user, 'Fetch Success');
     }
+
+    public function fetchAll(Request $request)
+    {
+        $id = $request->input('id');
+        $name = $request->input('name');
+        $email = $request->input('email');
+        $role = $request->input('role');
+        $cabang_id = $request->input('cabang_id');
+        $limit = $request->input('limit');
+        $search = $request->input('search');
+
+        $userQuery = User::with(['cabang']);
+
+        //get single data
+        if($id)
+        {
+           $user = $userQuery->find($id);
+
+            if($user)
+            {
+                return ResponseFormatter::success($user, "User found");
+            }
+            return ResponseFormatter::error('User not found');
+        }
+
+        //get multiple data
+        $users = $userQuery;
+       
+        if($search){
+            $users->where('name','like','%'.$search.'%')->orWhere('email','like','%'.$search.'%');
+        }
+
+        if($name){
+            $users->where('name',$name);
+        }
+
+        if($email){
+            $users->where('email',$email);
+        }
+
+        if($role){
+            $users->where('role', $role);
+        }
+        if($cabang_id){
+            $users->where('cabang_id', $cabang_id);
+        }
+        
+        if($limit)
+        {
+            return ResponseFormatter::success($users->orderBy('cabang_id','asc')->paginate($limit),'Users Found');
+        }
+
+        return ResponseFormatter::success($users->get(),'Users Found');
+    }
+
+    
+
 }

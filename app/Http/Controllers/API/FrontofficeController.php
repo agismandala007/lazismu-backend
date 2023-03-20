@@ -5,8 +5,10 @@ namespace App\Http\Controllers\API;
 use Exception;
 use App\Models\Frontoffice;
 use Illuminate\Http\Request;
+use App\Exports\FrontofficeExport;
 use App\Helpers\ResponseFormatter;
 use App\Http\Controllers\Controller;
+use Maatwebsite\Excel\Facades\Excel;
 use App\Http\Requests\CreateFrontofficeRequest;
 use App\Http\Requests\UpdateFrontofficeRequest;
 
@@ -25,9 +27,11 @@ class FrontofficeController extends Controller
         $tempatbayar = $request->input('tempatbayar');
         $coadebit_id = $request->input('coadebit_id');
         $coakredit_id = $request->input('coakredit_id');
+        $cabang_id = $request->input('cabang_id');
         $limit = $request->input('limit');
+        $search = $request->input('search');
 
-        $frontofficeQuery = Frontoffice::with(['coadebit','coakredit']);
+        $frontofficeQuery = Frontoffice::with(['coadebit','coakredit'])->where('cabang_id',$cabang_id);
 
         //get single data
         if($id)
@@ -44,8 +48,8 @@ class FrontofficeController extends Controller
         //get multiple data
         $frontoffices = $frontofficeQuery;
        
-        if($name){
-            $frontoffices->where('name','like','%'.$name . '%');
+        if($search){
+            $frontoffices->where('name','like','%'.$search.'%')->orWhere('nobuktipenerima','like','%'.$search.'%');
         }
 
         if($penyetor){
@@ -55,9 +59,9 @@ class FrontofficeController extends Controller
         if($penerima){
             $frontoffices->where('penerima',$penerima);
         }
-        if($nobuktipenerima){
-            $frontoffices->where('nobuktipenerima','like','%'.$nobuktipenerima . '%');
-        }
+        // if($nobuktipenerima){
+        //     $frontoffices->where('nobuktipenerima','like','%'.$nobuktipenerima . '%');
+        // }
         if($tanggal){
             $frontoffices->where('tanggal', $tanggal);
         }
@@ -70,6 +74,7 @@ class FrontofficeController extends Controller
         if($coakredit_id){
             $frontoffices->where('coakredit_id',$coakredit_id);
         }
+        
         if($from && $to){
             $frontoffices->whereBetween('tanggal', [$from, $to]);
         }
@@ -95,6 +100,8 @@ class FrontofficeController extends Controller
                 'tempatbayar' => $request->tempatbayar,
                 'coadebit_id' => $request->coadebit_id,
                 'coakredit_id' => $request->coakredit_id,
+                'cabang_id' => $request->cabang_id,
+
             ]);
             
             if(!$frontoffice)
@@ -158,5 +165,20 @@ class FrontofficeController extends Controller
         } catch (Exception $e) {
             return ResponseFormatter::error($e->getMessage(),500);
         }
+    }
+
+    public function export(Request $request)
+    {
+        $cabang_id = $request->input('cabang_id');
+     
+        // $arrays =  Frontoffice::leftJoin('coadebits','coadebits.id','=','frontoffices.coadebit_id')
+        // ->leftJoin('coakredits','coakredits.id','=','frontoffices.coakredit_id')
+        // ->select('frontoffices.name','frontoffices.penyetor','frontoffices.penerima','frontoffices.nobuktipenerima','frontoffices.tanggal','frontoffices.ref','frontoffices.jumlah','frontoffices.tempatbayar','coakredits.name','coadebits.name')->where('frontoffices.cabang_id',$cabang_id)->get()->toArray();
+        
+        return Excel::download(new FrontofficeExport($cabang_id), 'clients.xlsx');
+        // return Excel::download(new PengeluaranExport,'pengeluaran.xlsx');
+        // return (new FrontofficeExport)->forCabang($cabang_id)->download('invoices.xlsx');
+        // (new KasbesarExport(auth('sanctum')->user()))->store('transactions-exports/' . now()->format('d:m:Y') . '.csv', 's3', \Maatwebsite\Excel\Excel::CSV);
+        // return response()->json('Export started');
     }
 }

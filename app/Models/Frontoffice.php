@@ -25,6 +25,7 @@ class Frontoffice extends Model
         'tempatbayar',
         'coadebit_id',
         'coakredit_id',
+        'cabang_id',
     ];
 
     public function coadebit()

@@ -36,11 +36,11 @@ class DatabaseSeeder extends Seeder
             ]);
         
 
-        // Cabang::factory(5)->create();
+        Cabang::factory(5)->create();
         // Coadebit::factory(20)->create();
         // Coakredit::factory(20)->create();
         // Frontoffice::factory(35)->create();
         // Kasbank::factory(11)->create();
-        // Kasbesar::factory(3)->create();
+        // Kasbesar::factory(2)->create();
         }
 }

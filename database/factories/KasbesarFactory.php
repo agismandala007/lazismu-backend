@@ -23,9 +23,10 @@ class KasbesarFactory extends Factory
             'tanggal' => $this->faker->date(),
             'ref' => 'JKBB',
             'jumlah' => $this->faker->randomNumber(5, true),
-            'coadebit_id' => $this->faker->numberBetween(1, 20),
-            'coakredit_id' => $this->faker->numberBetween(1, 20),
-            'cabang_id' => $this->faker->numberBetween(1,4),
+            'coadebit_id' => 1,
+            'coakredit_id' => 1,
+            'cabang_id' => 1,
+            'jenis_data' => $this->faker->numberBetween(0,1),
             ];
     }
 }

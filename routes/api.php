@@ -12,6 +12,7 @@ use App\Http\Controllers\API\JurnalumumController;
 use App\Http\Controllers\API\KasbankController;
 use App\Http\Controllers\API\KasbesarController;
 use App\Http\Controllers\API\KaskecilController;
+use App\Models\Frontoffice;
 
 /*
 |--------------------------------------------------------------------------
@@ -35,6 +36,7 @@ Route::name('auth.')->group(function(){
     Route::middleware('auth:sanctum')->group(function(){
         Route::post('logout', [UserController::class, 'logout'])->name('logout');
         Route::get('user', [UserController::class,'fetch'])->name('fetch');
+        Route::get('userall', [UserController::class,'fetchAll'])->name('fetchall');
     });
 
 });
@@ -53,6 +55,7 @@ Route::prefix('coakredit')->middleware('auth:sanctum')->name('coakredit.')->grou
     Route::post('', [CoakreditController::class,'create'])->name('create');
     Route::post('update/{id}', [CoakreditController::class,'update'])->name('update');
     Route::delete('{id}', [CoakreditController::class,'destroy'])->name('delete');
+    Route::post('/import_excel', [CoakreditController::class,'import_excel'])->name('importcoakredit');
 });
 
 //frontoffice API
@@ -61,6 +64,8 @@ Route::prefix('frontoffice')->middleware('auth:sanctum')->name('frontoffice.')->
     Route::post('', [FrontofficeController::class,'create'])->name('create');
     Route::post('update/{id}', [FrontofficeController::class,'update'])->name('update');
     Route::delete('{id}', [FrontofficeController::class,'destroy'])->name('delete');
+    Route::get('/export', [FrontofficeController::class,'export'])->name('exportfo');
+
 });
 
 //kasbank API
@@ -77,7 +82,9 @@ Route::prefix('kasbesar')->middleware('auth:sanctum')->name('kasbesar.')->group(
     Route::post('', [KasbesarController::class,'create'])->name('create');
     Route::post('update/{id}', [KasbesarController::class,'update'])->name('update');
     Route::delete('{id}', [KasbesarController::class,'destroy'])->name('delete');
+    //export excel
 });
+Route::get('/kasbesar/export', [KasbesarController::class,'export'])->middleware('auth:sanctum')->name('export');
 
 //kaskecil API
 Route::prefix('kaskecil')->middleware('auth:sanctum')->name('kaskecil.')->group(function(){

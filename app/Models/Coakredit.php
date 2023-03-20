@@ -18,6 +18,7 @@ class Coakredit extends Model
         'name',
         'kode',
         'laporan',
+        'cabang_id'
     ];
 
     public function frontoffices()

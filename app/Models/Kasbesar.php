@@ -2,8 +2,9 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Kasbesar extends Model
 {
@@ -18,6 +19,8 @@ class Kasbesar extends Model
         'jumlah',
         'coadebit_id',
         'coakredit_id',
+        'cabang_id',
+        'jenis_data',
     ];
 
     public function coadebit()

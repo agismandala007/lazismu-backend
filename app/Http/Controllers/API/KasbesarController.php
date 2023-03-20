@@ -5,8 +5,10 @@ namespace App\Http\Controllers\API;
 use Exception;
 use App\Models\Kasbesar;
 use Illuminate\Http\Request;
+use App\Exports\KasbesarExport;
 use App\Helpers\ResponseFormatter;
 use App\Http\Controllers\Controller;
+use Maatwebsite\Excel\Facades\Excel;
 use App\Http\Requests\CreateKasbesarRequest;
 use App\Http\Requests\UpdateKasbesarRequest;
 
@@ -24,8 +26,11 @@ class KasbesarController extends Controller
         $coadebit_id = $request->input('coadebit_id');
         $coakredit_id = $request->input('coakredit_id');
         $limit = $request->input('limit',10);
+        $cabang_id = $request->input('cabang_id');
+        $search = $request->input('search');
+        $jenis_data = $request->input('jenis_data');
 
-        $kasbesarQuery = Kasbesar::with(['coadebit','coakredit']);
+        $kasbesarQuery = Kasbesar::with(['coadebit','coakredit'])->where('cabang_id', $cabang_id);
 
         //get single data
         if($id)
@@ -40,32 +45,36 @@ class KasbesarController extends Controller
         }
 
         //get multiple data
-        $kasbesar = $kasbesarQuery;
-       
-        if($name){
-            $kasbesar->where('name','like','%'.$name . '%');
+        $kasbesars = $kasbesarQuery;
+        
+        if($search){
+            $kasbesars->where('name','like','%'.$search.'%')->orWhere('nobuktikas','like','%'.$search.'%');
         }
+
         if($penerima){
-            $kasbesar->where('penerima',$penerima);
+            $kasbesars->where('penerima',$penerima);
         }
         if($nobuktikas){
-            $kasbesar->where('nobuktikas','like','%'.$nobuktikas . '%');
+            $kasbesars->where('nobuktikas','like','%'.$nobuktikas . '%');
         }
         if($tanggal){
-            $kasbesar->where('tanggal', $tanggal);
+            $kasbesars->where('tanggal', $tanggal);
         }
         if($coadebit_id){
-            $kasbesar->where('coadebit_id',$coadebit_id);
+            $kasbesars->where('coadebit_id',$coadebit_id);
         }
         if($coakredit_id){
-            $kasbesar->where('coakredit_id',$coakredit_id);
+            $kasbesars->where('coakredit_id',$coakredit_id);
+        }
+        if($cabang_id){
+            $kasbesars->where('cabang_id',$cabang_id);
         }
         if($from && $to){
-            $kasbesar->whereBetween('tanggal', [$from, $to]);
+            $kasbesars->whereBetween('tanggal', [$from, $to]);
         }
         
 
-        return ResponseFormatter::success($kasbesar->paginate($limit),'Kasbesar Found');
+        return ResponseFormatter::success($kasbesars->paginate($limit),'Kasbesar Found');
     }
 
     public function create(CreateKasbesarRequest $request)
@@ -80,6 +89,9 @@ class KasbesarController extends Controller
                 'jumlah' => $request->jumlah,
                 'coadebit_id' => $request->coadebit_id,
                 'coakredit_id' => $request->coakredit_id,
+                'cabang_id' => $request->cabang_id,
+                'jenis_data' => $request->jenis_data
+
             ]);
             
             if(!$kasbesar)
@@ -114,6 +126,8 @@ class KasbesarController extends Controller
                 'jumlah' => $request->jumlah,
                 'coadebit_id' => $request->coadebit_id,
                 'coakredit_id' => $request->coakredit_id,
+                'cabang_id' => $request->cabang_id,
+                'jenis_data' => $request->jenis_data,
             ]);
 
             return ResponseFormatter::success($kasbesar, 'Kasbesar updated');
@@ -141,5 +155,15 @@ class KasbesarController extends Controller
         } catch (Exception $e) {
             return ResponseFormatter::error($e->getMessage(),500);
         }
+    }
+
+    public function export(Request $request)
+    {
+        // $export = (new KasbesarExport(auth('sanctum')->user()));
+        // return Excel::download($export, 'invoices.xlsx');
+        
+        return (new KasbesarExport())->download('invoices.xlsx');
+        // (new KasbesarExport(auth('sanctum')->user()))->store('transactions-exports/' . now()->format('d:m:Y') . '.csv', 's3', \Maatwebsite\Excel\Excel::CSV);
+        // return response()->json('Export started');
     }
 }

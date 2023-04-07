@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\API\CabangController;
+use App\Http\Controllers\API\CoaController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\UserController;
@@ -36,6 +37,7 @@ Route::name('auth.')->group(function(){
     Route::middleware('auth:sanctum')->group(function(){
         Route::post('logout', [UserController::class, 'logout'])->name('logout');
         Route::get('user', [UserController::class,'fetch'])->name('fetch');
+        Route::post('user/update/{id}', [UserController::class,'update'])->name('update');
         Route::get('userall', [UserController::class,'fetchAll'])->name('fetchall');
     });
 
@@ -56,6 +58,17 @@ Route::prefix('coakredit')->middleware('auth:sanctum')->name('coakredit.')->grou
     Route::post('update/{id}', [CoakreditController::class,'update'])->name('update');
     Route::delete('{id}', [CoakreditController::class,'destroy'])->name('delete');
     Route::post('/import_excel', [CoakreditController::class,'import_excel'])->name('importcoakredit');
+});
+
+//coa API
+Route::prefix('coa')->middleware('auth:sanctum')->name('coa.')->group(function(){
+    Route::get('', [CoaController::class,'fetch'])->name('fetch');
+    Route::post('', [CoaController::class,'create'])->name('create');
+    Route::post('update/{id}', [CoaController::class,'update'])->name('update');
+    Route::delete('{id}', [CoaController::class,'destroy'])->name('delete');
+    Route::post('/import_excel', [CoaController::class,'importcoa'])->name('importcoa');
+    Route::get('/export', [CoaController::class,'export'])->name('exportcoa');
+
 });
 
 //frontoffice API
@@ -104,7 +117,10 @@ Route::prefix('jurnalumum')->middleware('auth:sanctum')->name('jurnalumum.')->gr
 
 //hitung API
 Route::prefix('hitung')->middleware('auth:sanctum')->name('hitung.')->group(function(){
+    Route::get('statistik', [HitungController::class,'statisAll'])->name('statistik');
     Route::get('fo', [HitungController::class,'fo'])->name('fo');
+    Route::get('coa', [HitungController::class,'coa'])->name('coa');
+    Route::get('kasbesar', [HitungController::class,'kasbesar'])->name('hkasbesar');
     Route::get('bank', [HitungController::class,'kasbank'])->name('bank');
     Route::post('update/{id}', [HitungController::class,'update'])->name('update');
     Route::delete('{id}', [HitungController::class,'destroy'])->name('delete');

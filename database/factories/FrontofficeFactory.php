@@ -21,13 +21,14 @@ class FrontofficeFactory extends Factory
             'penyetor' => $this->faker->name(),
             'penerima' => $this->faker->name(),
             'nobuktipenerima' => $this->faker->numerify('####BRV-FO'),
-            'tanggal' => $this->faker->date(),
+            'tanggal' => $this->faker->dateTimeBetween('-2 week'),
             'ref' => 'JKSR',
             'jumlah' => $this->faker->randomNumber(5, true),
             'tempatbayar' => 'kantor',
             'coadebit_id' => $this->faker->numberBetween(1, 20),
             'coakredit_id' => $this->faker->numberBetween(1, 20),
             'cabang_id' => $this->faker->numberBetween(1,4),
+            'jenis_data' => $this->faker->numberBetween(0,1),
             ];
     }
 }

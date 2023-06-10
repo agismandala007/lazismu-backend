@@ -34,9 +34,10 @@ class UpdateKasbesarRequest extends FormRequest
             'nobuktikas' => ['required', Rule::unique('kasbesars', 'nobuktikas')->ignore($kasbesar)],
             'tanggal' => 'required',
             'ref' => 'nullable',
-            'coadebit_id' => 'required|integer|exists:coadebits,id',
-            'coakredit_id' => 'required|integer|exists:coakredits,id',
+            'coadebit_id' => 'required|integer|exists:coas,id',
+            'coakredit_id' => 'required|integer|exists:coas,id',
             'cabang_id' => 'required|integer|exists:cabangs,id',
+            'jenis_data' => 'required',
             'jumlah' => 'required|integer'
         ];
     }

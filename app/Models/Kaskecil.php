@@ -18,14 +18,16 @@ class Kaskecil extends Model
         'jumlah',
         'coadebit_id',
         'coakredit_id',
+        'cabang_id',
+        'jenis_data'
     ];
 
     public function coadebit()
     {
-        return $this->belongsTo(Coadebit::class);
+        return $this->belongsTo(Coa::class,'coadebit_id');
     }
     public function coakredit()
     {
-        return $this->belongsTo(Coakredit::class);
+        return $this->belongsTo(Coa::class,'coakredit_id');
     }
 }

@@ -14,6 +14,7 @@ use App\Http\Controllers\API\KasbankController;
 use App\Http\Controllers\API\KasbesarController;
 use App\Http\Controllers\API\KaskecilController;
 use App\Models\Frontoffice;
+use App\Models\Kaskecil;
 
 /*
 |--------------------------------------------------------------------------
@@ -87,6 +88,7 @@ Route::prefix('kasbank')->middleware('auth:sanctum')->name('kasbank.')->group(fu
     Route::post('', [KasbankController::class,'create'])->name('create');
     Route::post('update/{id}', [KasbankController::class,'update'])->name('update');
     Route::delete('{id}', [KasbankController::class,'destroy'])->name('delete');
+    Route::get('/export', [KasbankController::class,'export'])->name('exportkasbank');
 });
 
 //kasbesar API
@@ -105,6 +107,7 @@ Route::prefix('kaskecil')->middleware('auth:sanctum')->name('kaskecil.')->group(
     Route::post('', [KaskecilController::class,'create'])->name('create');
     Route::post('update/{id}', [KaskecilController::class,'update'])->name('update');
     Route::delete('{id}', [KaskecilController::class,'destroy'])->name('delete');
+    Route::get('export', [KaskecilController::class,'export'])->name('export');
 });
 
 //jurnalumum API
@@ -113,6 +116,8 @@ Route::prefix('jurnalumum')->middleware('auth:sanctum')->name('jurnalumum.')->gr
     Route::post('', [JurnalumumController::class,'create'])->name('create');
     Route::post('update/{id}', [JurnalumumController::class,'update'])->name('update');
     Route::delete('{id}', [JurnalumumController::class,'destroy'])->name('delete');
+    Route::get('/export', [JurnalumumController::class,'export'])->name('exportju');
+
 });
 
 //hitung API
@@ -121,7 +126,9 @@ Route::prefix('hitung')->middleware('auth:sanctum')->name('hitung.')->group(func
     Route::get('fo', [HitungController::class,'fo'])->name('fo');
     Route::get('coa', [HitungController::class,'coa'])->name('coa');
     Route::get('kasbesar', [HitungController::class,'kasbesar'])->name('hkasbesar');
-    Route::get('bank', [HitungController::class,'kasbank'])->name('bank');
+    Route::get('jurnalumum', [HitungController::class,'jurnalumum'])->name('hju');
+    Route::get('kaskecil', [HitungController::class,'kaskecil'])->name('hkaskecil');
+    Route::get('kasbank', [HitungController::class,'kasbank'])->name('hkasbank');
     Route::post('update/{id}', [HitungController::class,'update'])->name('update');
     Route::delete('{id}', [HitungController::class,'destroy'])->name('delete');
 });

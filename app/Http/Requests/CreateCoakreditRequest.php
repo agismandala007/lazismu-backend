@@ -29,6 +29,7 @@ class CreateCoakreditRequest extends FormRequest
             'kode' => 'required|string|max:255|unique:coakredits',
             'laporan' => 'required|string|max:255',
             'cabang_id' => 'required|integer|exists:cabangs,id',
+            'tipe' => 'required'
         ];
     }
 }

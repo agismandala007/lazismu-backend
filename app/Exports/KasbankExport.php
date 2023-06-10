@@ -2,15 +2,13 @@
 
 namespace App\Exports;
 
-use App\Models\kasbesar;
-use Maatwebsite\Excel\Concerns\FromQuery;
-use Maatwebsite\Excel\Concerns\Exportable;
+use App\Models\Kasbank;
 use Maatwebsite\Excel\Concerns\WithMapping;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 
-class KasbesarExport implements FromCollection,ShouldAutoSize,WithMapping,WithHeadings
+class KasbankExport implements FromCollection,ShouldAutoSize,WithMapping,WithHeadings
 {
     /**
     * @return \Illuminate\Support\Collection
@@ -23,23 +21,23 @@ class KasbesarExport implements FromCollection,ShouldAutoSize,WithMapping,WithHe
     }
     public function collection()
     {
-        $data = kasbesar::with(['coadebit','coakredit'])
-            ->where('kasbesars.cabang_id', $this->id)->whereBetween('tanggal', [$this->from, $this->to])->get();
+        $data = Kasbank::with(['coadebit','coakredit'])
+            ->where('kasbanks.cabang_id', $this->id)->whereBetween('tanggal', [$this->from, $this->to])->get();
         return $data;
     }
-    public function map($kasbesar): array
+    public function map($kasbank): array
     {
         return [
-           $kasbesar->id,
-           $kasbesar->name,
-           $kasbesar->penerima,
-           $kasbesar->nobuktikas,
-           $kasbesar->tanggal,
-           $kasbesar->ref,
-           $kasbesar->jumlah,
-           $kasbesar->coadebit->name,
-           $kasbesar->coakredit->name,
-           $kasbesar->cabang_id,
+           $kasbank->id,
+           $kasbank->nobuktikas,
+           $kasbank->tanggal,
+           $kasbank->ref,
+           $kasbank->name,
+           $kasbank->coadebit->name,
+           $kasbank->jumlah,
+           $kasbank->coakredit->name,
+           $kasbank->penerima,
+           $kasbank->cabang_id,
            
         ];
     }
@@ -48,15 +46,16 @@ class KasbesarExport implements FromCollection,ShouldAutoSize,WithMapping,WithHe
         return
         [
             '#',
-            'name',
-            'penerima',
             'no bukti kas',
             'tanggal',
             'ref',
-            'jumlah',
+            'Uraian Transaksi',
             'Nama Akun Debit',
+            'jumlah',
             'Nama Akun Kredit',
+            'Nama Kasir',
             'Cabang_id'
         ];
     }
+
 }

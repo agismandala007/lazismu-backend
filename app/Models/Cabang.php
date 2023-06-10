@@ -20,12 +20,12 @@ class Cabang extends Model
 
     public function coadebits()
     {
-        return $this->hasMany(Coadebit::class);
+        return $this->hasMany(Coa::class);
     }
 
     public function coakredits()
     {
-        return $this->hasMany(Coakredit::class);
+        return $this->hasMany(Coa::class);
     }
 
     public function frontoffices()

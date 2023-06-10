@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Foundation\Http\FormRequest;
 
@@ -25,15 +26,15 @@ class CreateFrontofficeRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'required|string|min:4',
-            'penyetor' => 'required|string|min:4',
-            'penerima' => 'required|string|min:4',
-            'nobuktipenerima' => 'required|string|max:255|unique:frontoffices',
+            'name' => 'required|string',
+            'penyetor' => 'required|string',
+            'penerima' => 'required|string',
+            'nobuktipenerima' => Rule::unique('frontoffices')->where(fn ($query) => $query->where('cabang_id', $this->cabang_id)),
             'tanggal' => 'required',
             'ref' => 'nullable',
             'tempatbayar' => 'required|string|max:255',
-            'coadebit_id' => 'required|integer|exists:coadebits,id',
-            'coakredit_id' => 'required|integer|exists:coakredits,id',
+            'coadebit_id' => 'required|integer|exists:coas,id',
+            'coakredit_id' => 'required|integer|exists:coas,id',
             'jumlah' => 'required|integer',
             'cabang_id' => 'required|integer|exists:cabangs,id',
             

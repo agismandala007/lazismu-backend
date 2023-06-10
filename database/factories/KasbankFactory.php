@@ -26,6 +26,8 @@ class KasbankFactory extends Factory
             'coadebit_id' => $this->faker->numberBetween(1, 20),
             'coakredit_id' => $this->faker->numberBetween(1, 20),
             'cabang_id' => $this->faker->numberBetween(1,4),
+            'jenis_data' => $this->faker->numberBetween(1,4),
+           
             ];
     }
 }

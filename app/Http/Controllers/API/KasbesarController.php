@@ -46,9 +46,19 @@ class KasbesarController extends Controller
 
         //get multiple data
         $kasbesars = $kasbesarQuery;
+
+       
         
-        if($search){
-            $kasbesars->where('name','like','%'.$search.'%')->orWhere('nobuktikas','like','%'.$search.'%');
+        if($search || ($from && $to)){
+            $kasbesars->where(function ($query) use ($search, $from, $to) {
+                $query->where('name', 'like', '%' . $search . '%')
+                    ->orWhere('nobuktikas', 'like', '%' . $search . '%');
+        
+                if ($from && $to) {
+                    $query->whereBetween('tanggal', [$from, $to]);
+                }
+            });
+            
         }
 
         if($penerima){
@@ -74,7 +84,7 @@ class KasbesarController extends Controller
         }
         
 
-        return ResponseFormatter::success($kasbesars->paginate($limit),'Kasbesar Found');
+        return ResponseFormatter::success($kasbesars->orderBy('tanggal','desc')->paginate($limit),'Kasbesar Found');
     }
 
     public function create(CreateKasbesarRequest $request)
@@ -105,6 +115,7 @@ class KasbesarController extends Controller
         }
         
     }
+
 
     public function update(UpdateKasbesarRequest $request, $id)
     {
@@ -159,11 +170,9 @@ class KasbesarController extends Controller
 
     public function export(Request $request)
     {
-        // $export = (new KasbesarExport(auth('sanctum')->user()));
-        // return Excel::download($export, 'invoices.xlsx');
-        
-        return (new KasbesarExport())->download('invoices.xlsx');
-        // (new KasbesarExport(auth('sanctum')->user()))->store('transactions-exports/' . now()->format('d:m:Y') . '.csv', 's3', \Maatwebsite\Excel\Excel::CSV);
-        // return response()->json('Export started');
+        $cabang_id = $request->input('cabang_id'); 
+        $from = $request->input('from'); 
+        $to = $request->input('to'); 
+        return Excel::download(new KasbesarExport($cabang_id, $from, $to), 'kasbesar.xlsx');
     }
 }

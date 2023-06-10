@@ -29,13 +29,13 @@ class UpdateKaskecilRequest extends FormRequest
     {
         $kaskecil = Kaskecil::find($request->id);
         return [
-            'name' => 'required|string|min:4',
-            'penerima' => 'required|string|min:4',
-            'nobuktikas' => ['required', Rule::unique('kaskecils', 'nobuktikas')->ignore($kaskecil)],
+            'name' => 'required|string',
+            'penerima' => 'required|string',
+            'nobuktikas' => ['required', Rule::unique('kaskecils', 'nobuktikas')->ignore($kaskecil)->where(fn ($query) => $query->where('cabang_id', $this->cabang_id))],
             'tanggal' => 'required',
             'ref' => 'nullable',
-            'coadebit_id' => 'required|integer|exists:coadebits,id',
-            'coakredit_id' => 'required|integer|exists:coakredits,id',
+            'coadebit_id' => 'required|integer|exists:coas,id',
+            'coakredit_id' => 'required|integer|exists:coas,id',
             'cabang_id' => 'required|integer|exists:cabangs,id',
             'jumlah' => 'required|integer'
         ];

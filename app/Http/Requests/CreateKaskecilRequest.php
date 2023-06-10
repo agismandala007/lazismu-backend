@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Foundation\Http\FormRequest;
 
@@ -25,15 +26,17 @@ class CreateKaskecilRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'required|string|min:4',
-            'penerima' => 'required|string|min:4',
+            'name' => 'required|string',
+            'penerima' => 'required|string',
             'nobuktikas' => 'required|string|max:255|unique:kaskecils',
+            'nobuktikas' => Rule::unique('kaskecils')->where(fn ($query) => $query->where('cabang_id', $this->cabang_id)),
             'tanggal' => 'required',
             'ref' => 'nullable',
-            'coadebit_id' => 'required|integer|exists:coadebits,id',
-            'coakredit_id' => 'required|integer|exists:coakredits,id',
+            'coadebit_id' => 'required|integer|exists:coas,id',
+            'coakredit_id' => 'required|integer|exists:coas,id',
             'cabang_id' => 'required|integer|exists:cabangs,id',
-            'jumlah' => 'required|integer'
+            'jumlah' => 'required|integer',
+            'jenis_data' => 'required'
         ];
     }
 }

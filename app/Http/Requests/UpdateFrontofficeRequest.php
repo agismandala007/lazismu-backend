@@ -4,6 +4,7 @@ namespace App\Http\Requests;
 
 use App\Models\Coakredit;
 use App\Models\Frontoffice;
+use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Foundation\Http\FormRequest;
 use Symfony\Component\HttpFoundation\Request;
@@ -25,19 +26,18 @@ class UpdateFrontofficeRequest extends FormRequest
      *
      * @return array<string, mixed>
      */
-    public function rules(Request $request)
+    public function rules()
     {
-        $frontoffice = Frontoffice::find($request->id);
         return [
-            'name' => 'required|string|min:4',
-            'penyetor' => 'required|string|min:4',
-            'penerima' => 'required|string|min:4',
-            'nobuktipenerima' => ['required', 'unique:frontoffices,nobuktipenerima,' . $frontoffice->id],
+            'name' => 'required|string',
+            'penyetor' => 'required|string',
+            'penerima' => 'required|string',
+            'nobuktipenerima' => ['required', Rule::unique('frontoffices')->ignore($this->id)->where(fn ($query) => $query->where('cabang_id', $this->cabang_id))],
             'tanggal' => 'required',
             'ref' => 'nullable',
             'tempatbayar' => 'required|string|max:255',
-            'coadebit_id' => 'required|integer|exists:coadebits,id',
-            'coakredit_id' => 'required|integer|exists:coakredits,id',
+            'coadebit_id' => 'required|integer|exists:coas,id',
+            'coakredit_id' => 'required|integer|exists:coas,id',
             'cabang_id' => 'required|integer|exists:cabangs,id',
             'jumlah' => 'required|integer'
 

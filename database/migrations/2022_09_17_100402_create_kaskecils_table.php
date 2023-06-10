@@ -24,6 +24,7 @@ return new class extends Migration
             $table->bigInteger('coadebit_id')->unsigned();
             $table->bigInteger('coakredit_id')->unsigned();
             $table->bigInteger('cabang_id')->unsigned();
+            $table->boolean('jenis_data')->nullable();
             $table->timestamps();
         });
     }

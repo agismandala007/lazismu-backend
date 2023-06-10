@@ -13,12 +13,13 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('coadebits', function (Blueprint $table) {
+        Schema::create('coas', function (Blueprint $table) {
             $table->id();
             $table->string('name');
             $table->string('kode');
             $table->string('laporan')->nullable();
             $table->bigInteger('cabang_id')->unsigned();
+            $table->boolean('tipe');
             $table->timestamps();
         });
     }
@@ -30,6 +31,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('coadebits');
+        Schema::dropIfExists('coas');
     }
 };

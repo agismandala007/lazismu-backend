@@ -29,13 +29,12 @@ class UpdateJurnalumumRequest extends FormRequest
     {
         $jurnalumum = Jurnalumum::find($request->id);
         return [
-            'name' => 'required|string|min:4',
-            'penerima' => 'required|string|min:4',
-            'nobuktikas' => ['required', Rule::unique('jurnalumums', 'nobuktikas')->ignore($jurnalumum)],
+            'name' => 'required|string',
+            'nobukti' => ['required', Rule::unique('jurnalumums', 'nobukti')->ignore($jurnalumum)->where(fn ($query) => $query->where('cabang_id', $this->cabang_id))],
             'tanggal' => 'required',
             'ref' => 'nullable',
-            'coadebit_id' => 'required|integer|exists:coadebits,id',
-            'coakredit_id' => 'required|integer|exists:coakredits,id',
+            'coadebit_id' => 'required|integer|exists:coas,id',
+            'coakredit_id' => 'required|integer|exists:coas,id',
             'cabang_id' => 'required|integer|exists:cabangs,id',
             'jumlah' => 'required|integer'
         ];

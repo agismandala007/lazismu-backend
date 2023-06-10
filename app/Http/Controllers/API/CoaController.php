@@ -46,7 +46,7 @@ class CoaController extends Controller
 
 
         
-        return ResponseFormatter::success($coas->paginate($limit),'Coas Found');
+        return ResponseFormatter::success($coas->orderBy('name','asc')->paginate($limit),'Coas Found');
     }
 
     public function create(CreateCoaRequest $request)

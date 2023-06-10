@@ -31,11 +31,11 @@ class UpdateKasbankRequest extends FormRequest
         return [
             'name' => 'required|string|min:4',
             'penerima' => 'required|string|min:4',
-            'nobuktikas' => ['required', Rule::unique('kasbanks', 'nobuktikas')->ignore($kasbank)],
+            'nobuktikas' => ['required', Rule::unique('kasbanks', 'nobuktikas')->ignore($kasbank)->where(fn ($query) => $query->where('cabang_id', $this->cabang_id))],
             'tanggal' => 'required',
             'ref' => 'nullable',
-            'coadebit_id' => 'required|integer|exists:coadebits,id',
-            'coakredit_id' => 'required|integer|exists:coakredits,id',
+            'coadebit_id' => 'required|integer|exists:coas,id',
+            'coakredit_id' => 'required|integer|exists:coas,id',
             'cabang_id' => 'required|integer|exists:cabangs,id',
             'jumlah' => 'required|integer'
         ];

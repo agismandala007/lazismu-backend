@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Exports\JurnalumumExport;
 use Exception;
 use App\Models\Jurnalumum;
 use Illuminate\Http\Request;
 use App\Helpers\ResponseFormatter;
 use App\Http\Controllers\Controller;
+use Maatwebsite\Excel\Facades\Excel;
 use App\Http\Requests\CreateJurnalumumRequest;
 use App\Http\Requests\UpdateJurnalumumRequest;
 
@@ -23,8 +25,10 @@ class JurnalumumController extends Controller
         $coadebit_id = $request->input('coadebit_id');
         $coakredit_id = $request->input('coakredit_id');
         $limit = $request->input('limit',10);
+        $cabang_id = $request->input('cabang_id');
+        $search = $request->input('search');
 
-        $jurnalumumQuery = Jurnalumum::with(['coadebit','coakredit']);
+        $jurnalumumQuery = Jurnalumum::with(['coadebit','coakredit'])->where('cabang_id', $cabang_id);
 
         //get single data
         if($id)
@@ -40,7 +44,9 @@ class JurnalumumController extends Controller
 
         //get multiple data
         $jurnalumum = $jurnalumumQuery;
-       
+        if($search){
+            $jurnalumum->where('name','like','%'.$search.'%')->orWhere('nobukti','like','%'.$search.'%');
+        }
         if($name){
             $jurnalumum->where('name','like','%'.$name . '%');
         }
@@ -61,7 +67,7 @@ class JurnalumumController extends Controller
         }
         
 
-        return ResponseFormatter::success($jurnalumum->paginate($limit),'Jurnalumum Found');
+        return ResponseFormatter::success($jurnalumum->orderBy('id','desc')->paginate($limit),'Jurnalumum Found');
     }
 
     public function create(CreateJurnalumumRequest $request)
@@ -75,6 +81,7 @@ class JurnalumumController extends Controller
                 'jumlah' => $request->jumlah,
                 'coadebit_id' => $request->coadebit_id,
                 'coakredit_id' => $request->coakredit_id,
+                'cabang_id' => $request->cabang_id,
             ]);
             
             if(!$jurnalumum)
@@ -108,6 +115,7 @@ class JurnalumumController extends Controller
                 'jumlah' => $request->jumlah,
                 'coadebit_id' => $request->coadebit_id,
                 'coakredit_id' => $request->coakredit_id,
+                'cabang_id' => $request->cabang_id,
             ]);
 
             return ResponseFormatter::success($jurnalumum, 'Jurnalumum updated');
@@ -135,5 +143,12 @@ class JurnalumumController extends Controller
         } catch (Exception $e) {
             return ResponseFormatter::error($e->getMessage(),500);
         }
+    }
+    public function export(Request $request)
+    {
+        $cabang_id = $request->input('cabang_id'); 
+        $from = $request->input('from'); 
+        $to = $request->input('to'); 
+        return Excel::download(new JurnalumumExport($cabang_id, $from, $to), 'ju.xlsx');
     }
 }

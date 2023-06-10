@@ -5,9 +5,11 @@ namespace App\Http\Controllers\API;
 use Exception;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 use App\Helpers\ResponseFormatter;
 use Laravel\Fortify\Rules\Password;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\UpdateUserRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
@@ -19,10 +21,10 @@ class UserController extends Controller
             $request->validate([
                 'email' => 'required|email',
                 'password' => 'required',
-                'cabang_id' => 'required',
+                
             ]);
 
-            $credentials = request(['email','password','cabang_id']);
+            $credentials = request(['email','password']);
             if(!Auth::attempt($credentials)){
                 return ResponseFormatter::error('Unauthorized', 401);
             }
@@ -80,6 +82,38 @@ class UserController extends Controller
         } catch (Exception $error) {
             //error response
             return ResponseFormatter::error($error->getMessage());
+        }
+    }
+    public function update(UpdateUserRequest $request)
+    {
+        try {
+            $user = User::findOrFail($request->id);
+            if(!$user)
+            {
+                throw new Exception('Coa not created');
+            }
+            //Update user
+            $user->update([
+                'name' => $request->name,
+                'email' => $request->email,
+                'role' => $request->role,
+                'cabang_id' => $request->cabang_id,
+            ]);
+            if($request->has('password')) {
+                $user->password = Hash::make($request->password);
+            }
+            
+            //Generate Token
+            $tokenResult = $user->createToken('authToken')->plainTextToken;
+
+            //Return Response
+            return ResponseFormatter::success([
+                'access_token' => $tokenResult,
+                'token_type' => 'Bearer',
+                'user' => $user
+            ], 'Register success');
+        } catch (Exception $e) {
+            return ResponseFormatter::error($e->getMessage(), 500);
         }
     }
 

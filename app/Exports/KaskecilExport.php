@@ -2,19 +2,15 @@
 
 namespace App\Exports;
 
-use App\Models\kasbesar;
-use Maatwebsite\Excel\Concerns\FromQuery;
-use Maatwebsite\Excel\Concerns\Exportable;
+use App\Models\Kaskecil;
 use Maatwebsite\Excel\Concerns\WithMapping;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 
-class KasbesarExport implements FromCollection,ShouldAutoSize,WithMapping,WithHeadings
+class KaskecilExport implements FromCollection,ShouldAutoSize,WithMapping,WithHeadings
 {
-    /**
-    * @return \Illuminate\Support\Collection
-    */
+    
     protected $id, $from, $to;
     function __construct($id, $from, $to) {
         $this->id = $id;
@@ -23,23 +19,23 @@ class KasbesarExport implements FromCollection,ShouldAutoSize,WithMapping,WithHe
     }
     public function collection()
     {
-        $data = kasbesar::with(['coadebit','coakredit'])
-            ->where('kasbesars.cabang_id', $this->id)->whereBetween('tanggal', [$this->from, $this->to])->get();
+        $data = Kaskecil::with(['coadebit','coakredit'])
+            ->where('kaskecils.cabang_id', $this->id)->whereBetween('tanggal', [$this->from, $this->to])->get();
         return $data;
     }
-    public function map($kasbesar): array
+    public function map($kaskecil): array
     {
         return [
-           $kasbesar->id,
-           $kasbesar->name,
-           $kasbesar->penerima,
-           $kasbesar->nobuktikas,
-           $kasbesar->tanggal,
-           $kasbesar->ref,
-           $kasbesar->jumlah,
-           $kasbesar->coadebit->name,
-           $kasbesar->coakredit->name,
-           $kasbesar->cabang_id,
+           $kaskecil->id,
+           $kaskecil->name,
+           $kaskecil->penerima,
+           $kaskecil->nobuktikas,
+           $kaskecil->tanggal,
+           $kaskecil->ref,
+           $kaskecil->jumlah,
+           $kaskecil->coadebit->name,
+           $kaskecil->coakredit->name,
+           $kaskecil->cabang_id,
            
         ];
     }

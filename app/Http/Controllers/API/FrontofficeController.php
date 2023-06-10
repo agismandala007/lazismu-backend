@@ -30,6 +30,7 @@ class FrontofficeController extends Controller
         $cabang_id = $request->input('cabang_id');
         $limit = $request->input('limit');
         $search = $request->input('search');
+        $jenis_data = $request->input('jenis_data');
 
         $frontofficeQuery = Frontoffice::with(['coadebit','coakredit'])->where('cabang_id',$cabang_id);
 
@@ -80,13 +81,13 @@ class FrontofficeController extends Controller
         }
         if($limit)
         {
-            return ResponseFormatter::success($frontoffices->paginate($limit),'Frontoffices Found');
+            return ResponseFormatter::success($frontoffices->orderBy('tanggal','desc')->paginate($limit),'Frontoffices Found');
         }
 
         return ResponseFormatter::success($frontoffices->get(),'Frontoffices Found');
     }
 
-    public function create(CreateFrontofficeRequest $request)
+    public function create(CreateFrontofficeRequest $request, Frontoffice $fo)
     {
         try {
             $frontoffice = Frontoffice::create([
@@ -101,6 +102,8 @@ class FrontofficeController extends Controller
                 'coadebit_id' => $request->coadebit_id,
                 'coakredit_id' => $request->coakredit_id,
                 'cabang_id' => $request->cabang_id,
+                
+
 
             ]);
             
@@ -138,6 +141,8 @@ class FrontofficeController extends Controller
                 'tempatbayar' => $request->tempatbayar,
                 'coadebit_id' => $request->coadebit_id,
                 'coakredit_id' => $request->coakredit_id,
+                'jenis_data' => $request->jenis_data
+
             ]);
 
             return ResponseFormatter::success($frontoffice, 'Frontoffice updated');
@@ -169,16 +174,11 @@ class FrontofficeController extends Controller
 
     public function export(Request $request)
     {
-        $cabang_id = $request->input('cabang_id');
-     
-        // $arrays =  Frontoffice::leftJoin('coadebits','coadebits.id','=','frontoffices.coadebit_id')
-        // ->leftJoin('coakredits','coakredits.id','=','frontoffices.coakredit_id')
-        // ->select('frontoffices.name','frontoffices.penyetor','frontoffices.penerima','frontoffices.nobuktipenerima','frontoffices.tanggal','frontoffices.ref','frontoffices.jumlah','frontoffices.tempatbayar','coakredits.name','coadebits.name')->where('frontoffices.cabang_id',$cabang_id)->get()->toArray();
+        $cabang_id = $request->input('cabang_id'); 
+        $from = $request->input('from'); 
+        $to = $request->input('to'); 
         
-        return Excel::download(new FrontofficeExport($cabang_id), 'clients.xlsx');
-        // return Excel::download(new PengeluaranExport,'pengeluaran.xlsx');
-        // return (new FrontofficeExport)->forCabang($cabang_id)->download('invoices.xlsx');
-        // (new KasbesarExport(auth('sanctum')->user()))->store('transactions-exports/' . now()->format('d:m:Y') . '.csv', 's3', \Maatwebsite\Excel\Excel::CSV);
-        // return response()->json('Export started');
+        return Excel::download(new FrontofficeExport($cabang_id, $from, $to), 'FrontOffice.xlsx');
+        
     }
 }

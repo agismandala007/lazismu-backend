@@ -13,6 +13,7 @@ use App\Http\Controllers\API\JurnalumumController;
 use App\Http\Controllers\API\KasbankController;
 use App\Http\Controllers\API\KasbesarController;
 use App\Http\Controllers\API\KaskecilController;
+use App\Http\Controllers\API\MuzakiController;
 use App\Models\Frontoffice;
 use App\Models\Kaskecil;
 
@@ -139,5 +140,15 @@ Route::prefix('cabang')->middleware('auth:sanctum')->name('cabang.')->group(func
     Route::post('update/{id}', [CabangController::class,'update'])->name('update');
     Route::delete('{id}', [CabangController::class,'destroy'])->name('delete');
 });
+//muzaki API
+// Route::prefix('muzaki')->name('muzaki.')->group(function(){
+//     Route::get('', [MuzakiController::class,'fetch'])->name('fetch');
+//     Route::post('', [MuzakiController::class,'store'])->name('store');
+//     Route::post('update/{id}', [MuzakiController::class,'update'])->name('update');
+//     Route::delete('{id}', [MuzakiController::class,'destroy'])->name('delete');
+// });
 
- 
+Route::post("/muzaki", [MuzakiController::class, 'store']);
+// Route::apiResource("/muzaki", MuzakiController::class);
+
+

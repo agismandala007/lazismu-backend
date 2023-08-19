@@ -9,9 +9,21 @@ use App\Helpers\ResponseFormatter;
 use App\Http\Requests\CreateMuzakiRequest;
 use Exception;
 use GrahamCampbell\ResultType\Success;
+use Illuminate\Support\Facades\DB;
 
 class MuzakiController extends Controller
 {
+
+    public function fetch(Request $request)
+    {
+        $limit = $request->input('limit', 10);
+
+        $muzaki = DB::table('muzakis')->orderBy('nama', 'asc')->paginate($limit);
+    
+        return ResponseFormatter::success($muzaki, 'Muzaki Found');
+    }
+
+
 
     /**
      * Display a listing of the resource.
@@ -31,15 +43,14 @@ class MuzakiController extends Controller
      */
     public function store(CreateMuzakiRequest $request)
     {
-        // $validated = $request->validate();
-
-        // if($validated){
-        //     $muzaki = Muzaki::create($validated);
-        //     return ResponseFormatter::success($muzaki, 'Muzaki successfully added');
-        // }
 
         try {
-            $muzaki = Muzaki::create($request->validate());
+            $muzaki = Muzaki::create([
+                'nama' => $request->nama,
+                'alamat' => $request->alamat,
+                'noTelp' => $request->noTelp,
+                'npwp' => $request->npwp
+            ]);
             
             if(!$muzaki)
             {

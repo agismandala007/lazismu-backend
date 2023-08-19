@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Muzaki extends Model
 {
     use HasFactory;
+    
     protected $fillable = [
         "nama",
         "alamat",

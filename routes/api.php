@@ -141,14 +141,7 @@ Route::prefix('cabang')->middleware('auth:sanctum')->name('cabang.')->group(func
     Route::delete('{id}', [CabangController::class,'destroy'])->name('delete');
 });
 //muzaki API
-// Route::prefix('muzaki')->name('muzaki.')->group(function(){
-//     Route::get('', [MuzakiController::class,'fetch'])->name('fetch');
-//     Route::post('', [MuzakiController::class,'store'])->name('store');
-//     Route::post('update/{id}', [MuzakiController::class,'update'])->name('update');
-//     Route::delete('{id}', [MuzakiController::class,'destroy'])->name('delete');
-// });
-
-Route::post("/muzaki", [MuzakiController::class, 'store']);
-// Route::apiResource("/muzaki", MuzakiController::class);
-
-
+Route::prefix('/muzaki')->middleware('auth:sanctum')->name('muzaki.')->group(function(){
+    Route::get('', [MuzakiController::class, 'fetch'])->name('fetch');
+    Route::post('', [MuzakiController::class, 'store'])->name('store');
+});

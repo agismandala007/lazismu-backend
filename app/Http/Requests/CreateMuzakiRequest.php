@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Auth;
 
 class CreateMuzakiRequest extends FormRequest
 {
@@ -26,8 +27,8 @@ class CreateMuzakiRequest extends FormRequest
         return [
             'nama' => 'required|string',
             'alamat' => 'required|string',
-            'noTelp' => 'required|string|min:12',
-            'npwp' => 'required|string|min:10'
+            'noTelp' => 'required|string',
+            'npwp' => 'required|string'
         ];
     }
 }

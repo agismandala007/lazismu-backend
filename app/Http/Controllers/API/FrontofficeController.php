@@ -11,6 +11,7 @@ use App\Http\Controllers\Controller;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Http\Requests\CreateFrontofficeRequest;
 use App\Http\Requests\UpdateFrontofficeRequest;
+use Illuminate\Support\Facades\DB;
 
 class FrontofficeController extends Controller
 {
@@ -85,6 +86,21 @@ class FrontofficeController extends Controller
         }
 
         return ResponseFormatter::success($frontoffices->get(),'Frontoffices Found');
+    }
+
+    public function fetchNo () {
+        $noUrut = DB::table('frontoffices')->orderBy('nobuktipenerima', 'desc')->limit(1)->paginate(1);
+        
+        if (!$noUrut->isEmpty()){
+            return ResponseFormatter::success($noUrut, 'Data ditemukan');
+        }
+        else{
+            $noUrut = [
+                'data' => [['nobuktipenerima' => '0000']]
+            ];
+
+            return ResponseFormatter::success($noUrut);
+        }
     }
 
     public function create(CreateFrontofficeRequest $request, Frontoffice $fo)

@@ -14,11 +14,11 @@ use Illuminate\Support\Facades\DB;
 class MuzakiController extends Controller
 {
 
-    public function fetch(Request $request)
+    public function fetch()
     {
-        $limit = $request->input('limit', 10);
+        // $limit = $request->input('limit', 10);
 
-        $muzaki = DB::table('muzakis')->orderBy('nama', 'asc')->paginate($limit);
+        $muzaki = DB::table('muzakis')->orderBy('nama', 'asc')->paginate();
     
         return ResponseFormatter::success($muzaki, 'Muzaki Found');
     }
@@ -44,9 +44,11 @@ class MuzakiController extends Controller
     public function store(CreateMuzakiRequest $request)
     {
 
+
         try {
             $muzaki = Muzaki::create([
                 'nama' => $request->nama,
+                'nik' => $request->nik,
                 'alamat' => $request->alamat,
                 'noTelp' => $request->noTelp,
                 'npwp' => $request->npwp

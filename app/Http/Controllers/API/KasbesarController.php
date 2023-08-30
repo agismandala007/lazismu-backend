@@ -11,6 +11,8 @@ use App\Http\Controllers\Controller;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Http\Requests\CreateKasbesarRequest;
 use App\Http\Requests\UpdateKasbesarRequest;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx\Rels;
+use Illuminate\Support\Facades\DB;
 
 class KasbesarController extends Controller
 {
@@ -85,6 +87,21 @@ class KasbesarController extends Controller
         
 
         return ResponseFormatter::success($kasbesars->orderBy('tanggal','desc')->paginate($limit),'Kasbesar Found');
+    }
+
+    public function fetchNo(){
+            $noUrut = DB::table('kaskecils')->orderBy('nobuktikas', 'desc')->limit(1)->paginate(1);
+    
+            if (!$noUrut->isEmpty()) {
+                return ResponseFormatter::success($noUrut, 'No Urut Found');
+            }else{
+                $noUrut = [
+                    "data" => [[ "nobuktikas" => "0000" ]]
+                    
+                ];
+    
+                return ResponseFormatter::success($noUrut);
+            }
     }
 
     public function create(CreateKasbesarRequest $request)

@@ -11,6 +11,7 @@ class Muzaki extends Model
     
     protected $fillable = [
         "nama",
+        "nik",
         "alamat",
         "noTelp",
         "npwp"

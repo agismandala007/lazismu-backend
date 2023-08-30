@@ -26,6 +26,7 @@ class CreateMuzakiRequest extends FormRequest
     {
         return [
             'nama' => 'required|string',
+            'nik' => 'required|string',
             'alamat' => 'required|string',
             'noTelp' => 'required|string',
             'npwp' => 'required|string'

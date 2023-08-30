@@ -11,6 +11,9 @@ use App\Http\Controllers\Controller;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Http\Requests\CreateKaskecilRequest;
 use App\Http\Requests\UpdateKaskecilRequest;
+use Illuminate\Support\Facades\DB;
+
+use function PHPUnit\Framework\isEmpty;
 
 class KaskecilController extends Controller
 {
@@ -25,19 +28,17 @@ class KaskecilController extends Controller
         $to = $request->input('to');
         $coadebit_id = $request->input('coadebit_id');
         $coakredit_id = $request->input('coakredit_id');
-        $limit = $request->input('limit',10);
-        $search = $request -> input('search');
+        $limit = $request->input('limit', 10);
+        $search = $request->input('search');
         $cabang_id = $request->input('cabang_id');
 
-        $kaskecilQuery = Kaskecil::with(['coadebit','coakredit'])->where('cabang_id', $cabang_id);
+        $kaskecilQuery = Kaskecil::with(['coadebit', 'coakredit'])->where('cabang_id', $cabang_id);
 
         //get single data
-        if($id)
-        {
-           $kaskecil = $kaskecilQuery->find($id);
+        if ($id) {
+            $kaskecil = $kaskecilQuery->find($id);
 
-            if($kaskecil)
-            {
+            if ($kaskecil) {
                 return ResponseFormatter::success($kaskecil, "Kaskecil found");
             }
             return ResponseFormatter::error('Kaskecil not found');
@@ -46,39 +47,54 @@ class KaskecilController extends Controller
         //get multiple data
         $kaskecil = $kaskecilQuery;
 
-        if($search || ($from && $to)){
+        if ($search || ($from && $to)) {
             $kaskecil->where(function ($query) use ($search, $from, $to) {
                 $query->where('name', 'like', '%' . $search . '%')
                     ->orWhere('nobuktikas', 'like', '%' . $search . '%');
-        
+
                 if ($from && $to) {
                     $query->whereBetween('tanggal', [$from, $to]);
                 }
             });
-            
         }
-       
-        if($penerima){
-            $kaskecil->where('penerima',$penerima);
+
+        if ($penerima) {
+            $kaskecil->where('penerima', $penerima);
         }
-        if($nobuktikas){
-            $kaskecil->where('nobuktikas','like','%'.$nobuktikas . '%');
+        if ($nobuktikas) {
+            $kaskecil->where('nobuktikas', 'like', '%' . $nobuktikas . '%');
         }
-        if($tanggal){
+        if ($tanggal) {
             $kaskecil->where('tanggal', $tanggal);
         }
-        if($coadebit_id){
-            $kaskecil->where('coadebit_id',$coadebit_id);
+        if ($coadebit_id) {
+            $kaskecil->where('coadebit_id', $coadebit_id);
         }
-        if($coakredit_id){
-            $kaskecil->where('coakredit_id',$coakredit_id);
+        if ($coakredit_id) {
+            $kaskecil->where('coakredit_id', $coakredit_id);
         }
-        if($from && $to){
+        if ($from && $to) {
             $kaskecil->whereBetween('tanggal', [$from, $to]);
         }
-        
 
-        return ResponseFormatter::success($kaskecil->orderBy('tanggal','desc')->paginate($limit),'Kaskecil Found');
+
+        return ResponseFormatter::success($kaskecil->orderBy('tanggal', 'desc')->paginate($limit), 'Kaskecil Found');
+    }
+
+    public function fetchNo()
+    {
+        $noUrut = DB::table('kaskecils')->orderBy('nobuktikas', 'desc')->limit(1)->paginate(1);
+
+        if (!$noUrut->isEmpty()) {
+            return ResponseFormatter::success($noUrut, 'No Urut Found');
+        }else{
+            $noUrut = [
+                "data" => [[ "nobuktikas" => "0000" ]]
+                
+            ];
+
+            return ResponseFormatter::success($noUrut);
+        }
     }
 
     public function create(CreateKaskecilRequest $request)
@@ -96,17 +112,15 @@ class KaskecilController extends Controller
                 'cabang_id' => $request->cabang_id,
                 'jenis_data' => $request->jenis_data
             ]);
-            
-            if(!$kaskecil)
-            {
+
+            if (!$kaskecil) {
                 throw new Exception('Kaskecil not created');
             }
-    
+
             return ResponseFormatter::success($kaskecil, 'Kaskecil created');
         } catch (Exception $e) {
             return ResponseFormatter::error($e->getMessage(), 500);
         }
-        
     }
 
     public function update(UpdateKaskecilRequest $request, $id)
@@ -114,8 +128,7 @@ class KaskecilController extends Controller
         try {
             $kaskecil = Kaskecil::find($id);
 
-            if(!$kaskecil)
-            {
+            if (!$kaskecil) {
                 throw new Exception('Kaskecil not created');
             }
 
@@ -132,7 +145,6 @@ class KaskecilController extends Controller
             ]);
 
             return ResponseFormatter::success($kaskecil, 'Kaskecil updated');
-
         } catch (Exception $e) {
             return ResponseFormatter::error($e->getMessage(), 500);
         }
@@ -145,7 +157,7 @@ class KaskecilController extends Controller
             $kaskecil = Kaskecil::find($id);
 
             //check if kaskecil exists
-            if (!$kaskecil) { 
+            if (!$kaskecil) {
                 throw new Exception('Kaskecil not Found');
             }
 
@@ -154,14 +166,14 @@ class KaskecilController extends Controller
 
             return ResponseFormatter::success('Kaskecil deleted');
         } catch (Exception $e) {
-            return ResponseFormatter::error($e->getMessage(),500);
+            return ResponseFormatter::error($e->getMessage(), 500);
         }
     }
     public function export(Request $request)
     {
-        $cabang_id = $request->input('cabang_id'); 
-        $from = $request->input('from'); 
-        $to = $request->input('to'); 
+        $cabang_id = $request->input('cabang_id');
+        $from = $request->input('from');
+        $to = $request->input('to');
         return Excel::download(new KaskecilExport($cabang_id, $from, $to), 'kaskecil.xlsx');
     }
 }

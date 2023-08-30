@@ -29,10 +29,10 @@ class DatabaseSeeder extends Seeder
             ]);
         \App\Models\User::factory()->create([
                 'name' => 'Admin',
-                'email' => 'test1@gmail.com',
+                'email' => 'admin@email.com',
                 'cabang_id' => 1,
                 'role' => 1,
-                'password' => '$2a$12$JIEtpUt1S1tA58eCEkOms./5CkQ4dTJFDqpl9DFyXRejg4gvfF96K', // password
+                'password' => '$2a$12$.tr6GhHdEoy0ElXy6CwxbOEI5Hxche3GQr4cETb6KqRLiI0Jc./te', // admin
 
             ]);
         

@@ -80,6 +80,7 @@ Route::prefix('frontoffice')->middleware('auth:sanctum')->name('frontoffice.')->
     Route::post('update/{id}', [FrontofficeController::class,'update'])->name('update');
     Route::delete('{id}', [FrontofficeController::class,'destroy'])->name('delete');
     Route::get('/export', [FrontofficeController::class,'export'])->name('exportfo');
+    Route::get('/fetchNo', [FrontofficeController::class, 'fetchNo'])->name('fetchNo');
 
 });
 
@@ -98,6 +99,7 @@ Route::prefix('kasbesar')->middleware('auth:sanctum')->name('kasbesar.')->group(
     Route::post('', [KasbesarController::class,'create'])->name('create');
     Route::post('update/{id}', [KasbesarController::class,'update'])->name('update');
     Route::delete('{id}', [KasbesarController::class,'destroy'])->name('delete');
+    Route::get('/fetchNo', [KasbesarController::class, 'fetchNo'])->name('fetchNo');
     //export excel
 });
 Route::get('/kasbesar/export', [KasbesarController::class,'export'])->middleware('auth:sanctum')->name('export');
@@ -109,6 +111,7 @@ Route::prefix('kaskecil')->middleware('auth:sanctum')->name('kaskecil.')->group(
     Route::post('update/{id}', [KaskecilController::class,'update'])->name('update');
     Route::delete('{id}', [KaskecilController::class,'destroy'])->name('delete');
     Route::get('export', [KaskecilController::class,'export'])->name('export');
+    Route::get('/fetchNo', [KaskecilController::class, 'fetchNo'])->name('fetchNo');
 });
 
 //jurnalumum API
@@ -141,7 +144,7 @@ Route::prefix('cabang')->middleware('auth:sanctum')->name('cabang.')->group(func
     Route::delete('{id}', [CabangController::class,'destroy'])->name('delete');
 });
 //muzaki API
-Route::prefix('/muzaki')->middleware('auth:sanctum')->name('muzaki.')->group(function(){
+Route::prefix('muzaki')->middleware('auth:sanctum')->name('muzaki.')->group(function(){
     Route::get('', [MuzakiController::class, 'fetch'])->name('fetch');
     Route::post('', [MuzakiController::class, 'store'])->name('store');
 });

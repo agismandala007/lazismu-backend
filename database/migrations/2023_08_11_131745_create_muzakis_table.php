@@ -16,6 +16,7 @@ return new class extends Migration
         Schema::create('muzakis', function (Blueprint $table) {
             $table->id();
             $table->string("nama");
+            $table->string("nik");
             $table->text("alamat");
             $table->string("noTelp");
             $table->string("npwp");
